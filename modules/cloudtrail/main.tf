@@ -11,6 +11,8 @@ resource "aws_s3_bucket" "trail_bucket" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "aws_s3_bucket_policy" "trail_bucket_policy" {
   bucket = aws_s3_bucket.trail_bucket.id
 
@@ -41,8 +43,6 @@ resource "aws_s3_bucket_policy" "trail_bucket_policy" {
     ]
   })
 }
-
-data "aws_caller_identity" "current" {}
 
 resource "aws_cloudwatch_log_group" "trail" {
   name              = "/aws/cloudtrail/activity"
@@ -76,7 +76,7 @@ resource "aws_iam_role_policy" "cloudtrail_policy" {
         "logs:PutLogEvents",
         "logs:CreateLogStream"
       ]
-      Resource = "${aws_cloudwatch_log_group.trail.arn}:*"
+      Resource = aws_cloudwatch_log_group.trail.arn
     }]
   })
 }
