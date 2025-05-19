@@ -1,6 +1,3 @@
-variable "email" {
-  type = string
-}
 
 resource "aws_sns_topic" "login_alerts" {
   name = "console-login-alerts"
