@@ -1,1 +1,1 @@
-notification_email = "your-email@example.com"
+notification_email = "tippuluri1998@gmail.com"
