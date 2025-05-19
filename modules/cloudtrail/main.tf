@@ -3,7 +3,7 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_s3_bucket" "trail_bucket" {
-  bucket = "cloudtrail-activity-logs-\${random_id.suffix.hex}"
+  bucket = "cloudtrail-activity-logs-${random_id.suffix.hex}"
   force_destroy = true
   tags = {
     Name = "CloudTrailLogsBucket"
@@ -43,7 +43,7 @@ resource "aws_iam_role_policy" "cloudtrail_policy" {
           "logs:PutLogEvents",
           "logs:CreateLogStream"
         ]
-        Resource = "\${aws_cloudwatch_log_group.trail.arn}:*"
+        Resource = "${aws_cloudwatch_log_group.trail.arn}:*"
       }
     ]
   })
