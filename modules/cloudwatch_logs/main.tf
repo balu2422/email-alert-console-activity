@@ -1,6 +1,4 @@
-variable "log_group_name" {
-  type = string
-}
+
 
 resource "aws_cloudwatch_log_metric_filter" "login_filter" {
   name           = "console-login-filter"
