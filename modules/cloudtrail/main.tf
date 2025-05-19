@@ -61,3 +61,4 @@ resource "aws_cloudtrail" "trail" {
 
 output "log_group_name" {
   value = aws_cloud_
+}
