@@ -5,6 +5,7 @@ resource "random_id" "suffix" {
 resource "aws_s3_bucket" "trail_bucket" {
   bucket        = "cloudtrail-activity-logs-${random_id.suffix.hex}"
   force_destroy = true
+
   tags = {
     Name = "CloudTrailLogsBucket"
   }
@@ -36,16 +37,14 @@ resource "aws_iam_role_policy" "cloudtrail_policy" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:PutLogEvents",
-          "logs:CreateLogStream"
-        ]
-        Resource = "${aws_cloudwatch_log_group.trail.arn}:*"
-      }
-    ]
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "logs:PutLogEvents",
+        "logs:CreateLogStream"
+      ]
+      Resource = "${aws_cloudwatch_log_group.trail.arn}:*"
+    }]
   })
 }
 
@@ -55,14 +54,10 @@ resource "aws_cloudtrail" "trail" {
   include_global_service_events = true
   is_multi_region_trail         = true
   enable_log_file_validation    = true
+  enable_logging                = true
   cloud_watch_logs_role_arn     = aws_iam_role.cloudtrail_role.arn
   cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.trail.arn
 }
 
-resource "aws_cloudtrail_logging" "trail_logging" {
-  name = aws_cloudtrail.trail.name
-}
-
 output "log_group_name" {
-  value = aws_cloudwatch_log_group.trail.name
-}
+  value = aws_cloud_
