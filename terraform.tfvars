@@ -1,1 +1,1 @@
-notification_email = "tippuluri1998@gmail.com"
+notification_email = "balasubba.reddy@hcltech.com"
