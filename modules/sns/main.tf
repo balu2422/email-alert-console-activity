@@ -9,6 +9,3 @@ resource "aws_sns_topic_subscription" "email_sub" {
   endpoint  = var.email
 }
 
-output "topic_arn" {
-  value = aws_sns_topic.login_alerts.arn
-}
