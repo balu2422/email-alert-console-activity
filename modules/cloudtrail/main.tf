@@ -11,8 +11,6 @@ resource "aws_s3_bucket" "trail_bucket" {
   }
 }
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_s3_bucket_policy" "trail_bucket_policy" {
   bucket = aws_s3_bucket.trail_bucket.id
 
@@ -20,18 +18,20 @@ resource "aws_s3_bucket_policy" "trail_bucket_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AWSCloudTrailAclCheck20150319"
         Effect    = "Allow"
-        Principal = { Service = "cloudtrail.amazonaws.com" }
-        Action    = "s3:GetBucketAcl"
-        Resource  = aws_s3_bucket.trail_bucket.arn
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:GetBucketAcl"
+        Resource = aws_s3_bucket.trail_bucket.arn
       },
       {
-        Sid       = "AWSCloudTrailWrite20150319"
         Effect    = "Allow"
-        Principal = { Service = "cloudtrail.amazonaws.com" }
-        Action    = "s3:PutObject"
-        Resource  = "${aws_s3_bucket.trail_bucket.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action = "s3:PutObject"
+        Resource = "${aws_s3_bucket.trail_bucket.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
         Condition = {
           StringEquals = {
             "s3:x-amz-acl" = "bucket-owner-full-control"
@@ -41,6 +41,8 @@ resource "aws_s3_bucket_policy" "trail_bucket_policy" {
     ]
   })
 }
+
+data "aws_caller_identity" "current" {}
 
 resource "aws_cloudwatch_log_group" "trail" {
   name              = "/aws/cloudtrail/activity"
@@ -90,12 +92,16 @@ resource "aws_cloudtrail" "trail" {
   cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.trail.arn
 
   depends_on = [
-    aws_cloudwatch_log_group.trail,
     aws_iam_role_policy.cloudtrail_policy,
     aws_s3_bucket_policy.trail_bucket_policy,
+    aws_cloudwatch_log_group.trail
   ]
 }
 
 output "log_group_name" {
   value = aws_cloudwatch_log_group.trail.name
+}
+
+output "s3_bucket_name" {
+  value = aws_s3_bucket.trail_bucket.bucket
 }
