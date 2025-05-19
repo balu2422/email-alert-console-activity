@@ -1,20 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.0"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"  # Adjust region as needed
-}
-
 resource "random_id" "suffix" {
   byte_length = 4
 }
@@ -106,7 +89,7 @@ resource "aws_cloudtrail" "trail" {
   enable_log_file_validation    = true
   enable_logging                = true
   cloud_watch_logs_role_arn     = aws_iam_role.cloudtrail_role.arn
-  cloud_watch_logs_group_arn    = aws_cloudwatch_log_group.trail.arn
+  cloud_watch_logs_group_arn    = "${aws_cloudwatch_log_group.trail.arn}:*"
 
   depends_on = [
     aws_iam_role_policy.cloudtrail_policy,
@@ -115,10 +98,4 @@ resource "aws_cloudtrail" "trail" {
   ]
 }
 
-output "log_group_name" {
-  value = aws_cloudwatch_log_group.trail.name
-}
-
-output "s3_bucket_name" {
-  value = aws_s3_bucket.trail_bucket.bucket
-}
+output
