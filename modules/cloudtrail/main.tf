@@ -11,7 +11,6 @@ resource "aws_s3_bucket" "trail_bucket" {
   }
 }
 
-# Add the required S3 bucket policy for CloudTrail to write logs
 data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket_policy" "trail_bucket_policy" {
@@ -93,7 +92,7 @@ resource "aws_cloudtrail" "trail" {
   depends_on = [
     aws_cloudwatch_log_group.trail,
     aws_iam_role_policy.cloudtrail_policy,
-    aws_s3_bucket_policy.trail_bucket_policy
+    aws_s3_bucket_policy.trail_bucket_policy,
   ]
 }
 
